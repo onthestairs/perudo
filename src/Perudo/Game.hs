@@ -27,10 +27,11 @@ playPerudo players =
       Bet finalBet = fst $ head $ dropWhile ((/= Call) . snd) actionPairs
       allDices = concatMap hand players
       callWasCorrect = wasCallCorrect finalBet allDices
-      callingPlayer = length activeBetPairs `mod` numberOfPlayers
-      lastBettingPlayer = (callingPlayer + (numberOfPlayers - 1))  `mod` numberOfPlayers
+      callingPlayerIndex = (length activeBetPairs) + 1
+      callingPlayer = (cycle players) !! callingPlayerIndex
+      lastBettingPlayer = (cycle players) !! (callingPlayerIndex - 1)
       loser = if callWasCorrect then lastBettingPlayer else callingPlayer
-  in (loser, (map fst activeBetPairs))
+  in ((playerId . player) loser, (map fst activeBetPairs))
 
 decrementPlayer :: PlayerId -> [Player] -> [Player]
 decrementPlayer losingPlayerId players =
@@ -52,9 +53,9 @@ simulateRound players = do
   let (losingPlayerId, actions) = playPerudo inRoundPlayers
   let newPlayers = decrementPlayer losingPlayerId players
   let newPlayersOrdered = rotatePlayers losingPlayerId newPlayers
-  print actions
-  print losingPlayerId
-  print newPlayersOrdered
+  -- print actions
+  -- print losingPlayerId
+  -- print newPlayersOrdered
   return newPlayersOrdered
 
 gameHasEnded ps = length (filter ((> 0) . numberOfDice) ps) == 1
