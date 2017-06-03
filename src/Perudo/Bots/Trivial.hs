@@ -10,7 +10,13 @@ strategyCall :: Hand -> [NumberOfDice] -> RoundPosition -> [Action] -> Action
 strategyCall _ _ _ _ = Call
 
 strategySixSixes :: Hand -> [NumberOfDice] -> RoundPosition -> [Action] -> Action
-strategySixSixes _ _ _ _ = Bet (DiceBet 6 Six)
+strategySixSixes _ ns _ as =
+  let desiredBet = DiceBet (sum ns `div` 2) Six
+  in case length as of
+    0 -> Bet desiredBet
+    otherwise ->
+      let Bet b = last as
+      in if b > desiredBet then Call else Bet desiredBet
 
 expectedNumber hand ns dice =
   let handValues = length $ filter (\d -> d == One || d == Six) hand

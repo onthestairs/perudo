@@ -19,6 +19,7 @@ type Hand = [Dice]
 data PalaficoState = PalificoDone | PalificoPending deriving (Show, Eq)
 type NumberOfDice = Int
 data DiceBet = DiceBet NumberOfDice Dice deriving (Show, Eq)
+-- diagonalise bets
 instance Enum DiceBet where
   toEnum n =
     let (row, r) = quotRem n 11
@@ -32,6 +33,8 @@ instance Enum DiceBet where
     in case n `mod` 2 of
       0 -> (row*11) + 5 + (fromEnum d) - 1
       1 -> (row*11) + (fromEnum d) - 1
+instance Ord DiceBet where
+  b1 <= b2 = fromEnum b1 <= fromEnum b2
 data Action = Call | Bet DiceBet deriving (Show, Eq)
 type RoundPosition = Int
 type PerudoStrategy = Hand -> [NumberOfDice] -> RoundPosition -> [Action] -> Action
