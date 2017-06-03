@@ -5,6 +5,7 @@ module Perudo.Game (
 
 import System.Random
 import Data.List.Split
+import System.Random.Shuffle
 import Control.Monad.Loops
 
 import Perudo.Types
@@ -62,6 +63,8 @@ gameHasEnded ps = length (filter ((> 0) . numberOfDice) ps) == 1
 
 simulateGame :: [Player] -> IO PlayerId
 simulateGame players = do
-  endPlayers <- iterateUntilM gameHasEnded simulateRound players
+  g <- newStdGen
+  let shuffledPlayers = shuffle' players (length players) g
+  endPlayers <- iterateUntilM gameHasEnded simulateRound shuffledPlayers
   let winningPlayer = playerId $ head $ filter ((> 0) . numberOfDice) endPlayers
   return winningPlayer

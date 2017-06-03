@@ -23,6 +23,7 @@ library
                      , random
                      , split
                      , monad-loops
+                     , random-shuffle
   default-language:    Haskell2010
 
 executable perudo-exe
